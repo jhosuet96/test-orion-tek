@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import API from '../Api';
 
-function CompanyForm() {
+function CustomerForm() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [formData, setFormData] = useState({ nameCompany: '' });
+  const [formData, setFormData] = useState({ name: '', lastName: '', idCompany: '' });
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [companies, setCompanies] = useState([]);
 
   useEffect(() => {
     if (id) {
-      API.get(`Company/GetById?id=${id}`)
+      API.get(`Customer/GetById?id=${id}`)
         .then(response => {
           setFormData(response.data);
         })
@@ -19,6 +22,22 @@ function CompanyForm() {
           console.log(error);
         });
     }
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch('https://localhost:7133/Company/GetAll');
+        const data = await response.json();
+        // Mapear la respuesta para obtener las opciones del dropdown
+        const options = data.map(company => ({
+          value: company.idCompany,
+          label: company.nameCompany,
+        }));
+        setCompanies(options);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCompanies();
   }, [id]);
 
   const handleChange = e => {
@@ -28,12 +47,13 @@ function CompanyForm() {
   const handleSubmit = e => {
     e.preventDefault();
     if (id) {
-      API.patch(`Company/UpdateCompany`, formData)
+      formData.idCompany = selectedCompany.value;
+      API.patch(`Customer/UpdateCustomer`, formData)
         .then(() => {
           setShowSuccessAlert(true);
           setTimeout(() => {
             setShowSuccessAlert(false);
-            navigate(`/company/companyList`);
+            navigate(`/customer/customerList`);
           }, 1000);
         })
         .catch(error => {
@@ -41,12 +61,13 @@ function CompanyForm() {
           setShowErrorAlert(true);
         });
     } else {
-      API.post(`Company/AddCompany`, formData)
+      formData.idCompany = selectedCompany.value;
+      API.post(`Customer/AddCustomer`, formData)
         .then(() => {
           setShowSuccessAlert(true);
           setTimeout(() => {
             setShowSuccessAlert(false);
-            navigate(`/company/companyList`);
+            navigate('/customer/customerList');
           }, 1000);
         })
         .catch(error => {
@@ -58,7 +79,7 @@ function CompanyForm() {
 
   return (
     <div className="container">
-      <h1>{id ? 'Editar Empresa' : 'Agregar Empresa'}</h1>
+      <h1>{id ? 'Editar Cliente' : 'Agregar Cliente'}</h1>
       {showSuccessAlert && (
         <div className="alert alert-success" role="alert">
           ¡Guardado exitosamente!
@@ -71,10 +92,22 @@ function CompanyForm() {
       )}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>
-            Nombre Compañia:
-            <input type="text" className="form-control" name="nameCompany" value={formData.nameCompany} onChange={handleChange} />
-          </label>
+          <label>Nombre:</label>
+          <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label>Last Name:</label>
+          <input type="text" className="form-control" name="lastName" value={formData.lastName} onChange={handleChange} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="company">Compañía</label>
+          <Select
+            id="company"
+            name="idCompany"
+            options={companies}
+            value={selectedCompany}
+            onChange={option => setSelectedCompany(option)}
+          />
         </div>
         <button style={{ marginTop: '0.5rem' }} type="submit" className="btn btn-primary">
           {id ? 'Guardar cambios' : 'Agregar'}
@@ -84,4 +117,4 @@ function CompanyForm() {
   );
 }
 
-export default CompanyForm;
+export default CustomerForm;

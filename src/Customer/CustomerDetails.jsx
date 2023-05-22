@@ -2,31 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import API from '../Api';
 
-function CompanyDetails() {
+
+function CustomerDetails() {
   const { id } = useParams();
-  const [company, setCompany] = useState(null);
+  const [customer, setCustomer] = useState(null);
 
   useEffect(() => {
-    API.get(`Company/GetById?id=${id}`)
+    API.get(`Customer/GetById?id=${id}`)
       .then(response => {
-        setCompany(response.data);
+        setCustomer(response.data);
       })
       .catch(error => {
         console.log(error);
       });
   }, [id]);
 
-  if (!company) {
+  if (!customer) {
     return <div className="container">Cargando...</div>;
   }
 
-
   return (
     <div className="container">
-      <h1>{company.nameCompany}</h1>
-      <p>Nombre Compañia: {company.nameCompany}</p>
+      <h1>{customer.name}</h1>  
+      <p>Cliente: {customer.name} {customer.lastName}</p>
     </div>
   );
 }
 
-export default CompanyDetails;
+export default CustomerDetails;
