@@ -15,13 +15,15 @@ import CustomerDetailsList from './CustomerDetails/CustomerDetailsList';
 import CustomerDetailsForm from './CustomerDetails/CustomerDetailsFrom';
 import CustomerDetailsDelete from './CustomerDetails/CustomerDetailsDelete';
 import CustomerDetailsDetail from './CustomerDetails/CustomerDetailsDetail';
+import Home from './Home/Home';
+
 
 function App() {
   return (
     <Router>
       <Navbar />
       <Routes>
-        <Route exact="true" path="/" component={Home} />
+        <Route exact  path="/" element={<Home/>} />
         <Route path="/customer" element={<CustomerList />}  />
         <Route path="/company" element={<CompanyList />} />
         <Route path="/customerDetails" element={<CustomerDetailsList />} />
@@ -41,10 +43,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
-
-function Home() {
-  return <h1>Home</h1>;
 }
 
 export default App;

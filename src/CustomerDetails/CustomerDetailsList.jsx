@@ -38,11 +38,10 @@ function CustomerDetailsList() {
   return (
     <div className="container">
       <h1>Lista de Detalles del Cliente</h1>
-      <Link to="/customerDetails/create" className="btn btn-primary mb-3">Agregar Detalles del Cliente</Link>
+      <Link to="/customerDetails/create" className="btn btn-primary mb-3">Agregar Detalles a Cliente</Link>
       <table className="table mt-5">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Direccion</th>
             <th>E-mail</th>
@@ -52,7 +51,6 @@ function CustomerDetailsList() {
         <tbody>
           {customerDetails.map(customer => (
             <tr key={customer.idCustomerDetail}>
-              <td>{customer.idCustomerDetail}</td>
               <td>{getCustomerName(customer.idCustomer)}</td>
               <td>{customer.address}</td>
               <td>{customer.email}</td>

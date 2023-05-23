@@ -11,9 +11,6 @@ function Navbar() {
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav">
           <li className="nav-item">
-            <NavLink exact to="/" className="nav-link">Inicio</NavLink>
-          </li>
-          <li className="nav-item">
             <NavLink to="/company" className="nav-link">Empresas</NavLink>
           </li>
           <li className="nav-item">

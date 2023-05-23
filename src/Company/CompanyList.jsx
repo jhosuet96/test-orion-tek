@@ -19,10 +19,9 @@ function CompanyList() {
     <div className="container">
       <h1>Lista de Empresas</h1>
       <Link to="/company/create" className="btn btn-primary">Agregar Empresa</Link>
-      <table className="table mt-5">
-        <thead>
+      <table className="table m-3 mt-2"> 
+        <thead >
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Opciones</th>
           </tr>
@@ -30,8 +29,7 @@ function CompanyList() {
         <tbody>
           {companies.map(company => (
             <tr key={company.idCompany}>
-              <td>{company.idCompany}</td>
-              <td>{company.nameCompany}</td>
+              <td style={{ width: '300px' }}>{company.nameCompany}</td>
               <td style={{ width: '300px' }}>
                 <Link to={`/company/${company.idCompany}`} style={{  marginRight: '1rem' }} className="btn btn-info mr-2">Ver</Link>
                 <Link to={`/company/${company.idCompany}/edit`} style={{  marginRight: '1rem' }} className="btn btn-warning mr-2">Editar</Link>

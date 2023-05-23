@@ -4,17 +4,33 @@ import API from '../Api';
 
 function CustomerDetailsDetail() {
   const { id } = useParams();
-  const [customerDetails, setCustomerDetails] = useState(null);
+  const [customerDetails, setCustomerDetails] = useState([]);
+  const [customers, setCustomer] = useState(String);
 
   useEffect(() => {
-    API.get(`CustomerDetails/GetById?id=${id}`)
+    API.get(`CustomerDetails/GetByIdList?id=${id}`)
       .then(response => {
         setCustomerDetails(response.data);
+        console.log(response.data);
       })
       .catch(error => {
         console.log(error);
       });
+
+      const fetchCustomer= async () =>{
+        API.get(`Customer/GetById?id=${id}`)
+            .then(response => {
+              setCustomer(response.data.name +' '+response.data.lastName);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+      }
+
+      fetchCustomer();
   }, [id]);
+
 
   if (!customerDetails) {
     return (
@@ -30,23 +46,24 @@ function CustomerDetailsDetail() {
       <table className="table mt-5">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Direccion</th>
             <th>E-mail</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>{customerDetails.idCustomer}</td>
-            <td>{customerDetails.name} {customerDetails.lastName}</td>
-            <td>{customerDetails.address}</td>
-            <td>{customerDetails.email}</td>
-          </tr>
+        {customerDetails.map(customer => (
+            <tr key={customer.idCustomerDetail}>
+              <td>{customers}</td>
+              <td style={{ width: '500px' }}>{customer.address}</td>
+              <td style={{ width: '300px' }}>{customer.email}</td>              
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
   );
+  
 }
 
 export default CustomerDetailsDetail;

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import API from '../Api';
 
 function CustomerList() {
   const [customers, setCustomers] = useState([]);
   const [companies, setCompanies] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Obtener la lista de clientes
@@ -26,6 +27,11 @@ function CustomerList() {
       });
   }, []);
 
+  const handleViewDetails = customerId => {
+    // Redireccionar a la página CustomerDetailsDetail con el ID del cliente
+    navigate(`/customerDetails/${customerId}`);
+  };
+
   return (
     <div className="container">
       <h1>Lista de Clientes</h1>
@@ -33,22 +39,22 @@ function CustomerList() {
       <table className="table mt-5">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Nombre</th>
             <th>Compañía</th>
-            <th>Opciones</th>
+            <th style={{textAlign: 'center'}}>Opciones</th>
           </tr>
         </thead>
         <tbody>
           {customers.map(customer => (
             <tr key={customer.idCustomer}>
-              <td>{customer.idCustomer}</td>
               <td>{customer.name} {customer.lastName}</td>
               <td>{getCompanyName(customer.idCompany)}</td>
-              <td style={{ width: '300px' }}>
-                <Link to={`/customer/${customer.idCustomer}`} style={{ marginRight: '1rem' }} className="btn btn-info mr-2">Ver</Link>
+              <td style={{ width: '350px' }}>
+                <button className="btn btn-link" onClick={() => handleViewDetails(customer.idCustomer)}>
+                  Ver detalles
+                </button>
                 <Link to={`/customer/${customer.idCustomer}/edit`} style={{ marginRight: '1rem' }} className="btn btn-warning mr-2">Editar</Link>
-                <Link to={`/customer/delete/${customer.idCustomer}`} style={{ marginRight: '1rem' }} className="btn btn-danger">Eliminar</Link>
+                <Link to={`/customer/${customer.idCustomer}/delete`} style={{ marginRight: '1rem' }} className="btn btn-danger">Eliminar</Link>
               </td>
             </tr>
           ))}

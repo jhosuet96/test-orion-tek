@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import Select from 'react-select';
 import API from '../Api';
 
 function CustomerDetailsForm() {
@@ -14,21 +15,44 @@ function CustomerDetailsForm() {
     email: '',
     status: true
   });
+  const [customers, setCustomers] = useState([]);
 
   useEffect(() => {
     if (id) {
       API.get(`CustomerDetails/GetById?id=${id}`)
         .then(response => {
           setCustomerDetails(response.data);
+          console.log(response.data);
         })
         .catch(error => {
           console.log(error);
         });
     }
+
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch('https://localhost:7133/Customer/GetAll');
+        const data = await response.json();
+        // Mapear la respuesta para obtener las opciones del dropdown
+        const options = data.map(customer => ({
+          value: customer.idCustomer,
+          label: `${customer.name} ${customer.lastName}`,
+        }));
+        setCustomers(options);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCustomers();
   }, [id]);
 
   const handleChange = e => {
     setCustomerDetails({ ...customerDetails, [e.target.name]: e.target.value });
+  };
+
+  const handleCustomerChange = selectedOption => {
+    setCustomerDetails({ ...customerDetails, idCustomer: selectedOption.value });
   };
 
   const handleSubmit = e => {
@@ -76,6 +100,17 @@ function CustomerDetailsForm() {
         </div>
       )}
       <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="customerId">Cliente:</label>
+          <Select
+            id="customerId"
+            name="customerId"
+            options={customers}
+            value={customers.find(c => c.value === customerDetails.idCustomer)}
+            onChange={handleCustomerChange}
+            required
+          />
+        </div>
         <div className="form-group">
           <label htmlFor="address">Dirección:</label>
           <input
